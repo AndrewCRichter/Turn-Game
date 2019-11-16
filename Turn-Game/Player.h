@@ -8,8 +8,8 @@ class Player
 {
 private:
 	const float gravity = 1;
-	const float width = .8f,
-			   height = 1.9f;
+	const float width = .875f,
+			   height = 1.875f;
 	float x;
 	float y;
 	float dx, dy;

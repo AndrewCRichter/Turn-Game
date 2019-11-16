@@ -15,15 +15,17 @@ int main() {
 	LiveTilemap l(&txt,16,16,2);
 
 	std::vector<std::vector<int>> map;
-	std::vector<int> a; a.push_back(2); a.push_back(0);
-	std::vector<int> b; b.push_back(3); b.push_back(1);
+	std::vector<int> a; a.push_back(2); a.push_back(0); a.push_back(0);
+	std::vector<int> b; b.push_back(3); b.push_back(1); b.push_back(0);
+	std::vector<int> c; c.push_back(4); c.push_back(3); c.push_back(1);
 	map.push_back(a);
 	map.push_back(b);
+	map.push_back(c);
 	
-	l.update(map,64,64);
+	l.update(map,32,32);
 
 	sf::Transform trans;
-	trans.translate(250, 250).scale(1, -1);
+	trans.translate(0, 500).scale(1, -1);
 
 	while (window.isOpen()) {
 	
