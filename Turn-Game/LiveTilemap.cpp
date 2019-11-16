@@ -32,10 +32,10 @@ bool LiveTilemap::update(std::vector<std::vector<int>> tiles, float tileWidth, f
 			quadIndex[2].position = sf::Vector2f((float)(i + 1)*tileWidth, (float)(j + 1)*tileHeight);
 			quadIndex[3].position = sf::Vector2f((float)      i*tileWidth, (float)(j + 1)*tileHeight);
 			
-			quadIndex[0].texCoords= sf::Vector2f((float)      tu*t_width, (float)      tv*t_height);
-			quadIndex[1].texCoords= sf::Vector2f((float)(tu + 1)*t_width, (float)      tv*t_height);
-			quadIndex[2].texCoords= sf::Vector2f((float)(tu + 1)*t_width, (float)(tv + 1)*t_height);
-			quadIndex[3].texCoords= sf::Vector2f((float)      tu*t_width, (float)(tv + 1)*t_height);
+			quadIndex[3].texCoords= sf::Vector2f((float)      tu*t_width, (float)      tv*t_height);
+			quadIndex[2].texCoords= sf::Vector2f((float)(tu + 1)*t_width, (float)      tv*t_height);
+			quadIndex[1].texCoords= sf::Vector2f((float)(tu + 1)*t_width, (float)(tv + 1)*t_height);
+			quadIndex[0].texCoords= sf::Vector2f((float)      tu*t_width, (float)(tv + 1)*t_height);
 		}
 	return true;
 }

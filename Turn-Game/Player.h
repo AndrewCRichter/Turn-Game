@@ -8,8 +8,8 @@ class Player
 {
 private:
 	const float gravity = 1;
-	const float width = .8,
-			   height = 1.9;
+	const float width = .8f,
+			   height = 1.9f;
 	float x;
 	float y;
 	float dx, dy;
@@ -19,7 +19,7 @@ private:
 	std::vector<std::vector<int>> currentSlice;
 	int getCorner(int xoff, int yoff);
 public:
-	Player(int x, int y, int x0, int y0, const int direction[2], std::vector<std::vector<int>> slice);
+	Player(float x, float y, int x0, int y0, const int direction[2], std::vector<std::vector<int>> slice);
 	void move(float x, float y);
 	void processPhysics(float dt);
 	float getX();

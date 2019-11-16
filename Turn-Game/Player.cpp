@@ -1,10 +1,11 @@
 #include "Player.h"
 #include <cmath>
 
-Player::Player(int x, int y, int x0, int y0, const int direction[2], std::vector<std::vector<int>> slice)
+Player::Player(float x, float y, int x0, int y0, const int direction[2], std::vector<std::vector<int>> slice)
 {
 	this->x = x;
 	this->y = y;
+
 	this->x0 = x0;
 	this->z0 = z0;
 	this->direction[0] = direction[0];

@@ -15,10 +15,11 @@ int main() {
 	LiveTilemap l(&txt,16,16,2);
 
 	std::vector<std::vector<int>> map;
-	std::vector<int> a; a.push_back(1); a.push_back(2);
-	std::vector<int> b; b.push_back(1); b.push_back(0);
+	std::vector<int> a; a.push_back(2); a.push_back(0);
+	std::vector<int> b; b.push_back(3); b.push_back(1);
 	map.push_back(a);
 	map.push_back(b);
+	
 	l.update(map,64,64);
 
 	sf::Transform trans;
@@ -39,11 +40,12 @@ int main() {
 		
 		//GAME LOGIC HERE
 
-		window.draw(l,trans);
-		window.display();
 		//GAME GRAPHICS HERE
 
-		
+		window.clear(sf::Color(0, 200, 200));
+		window.draw(l, trans);
+		window.display();
+
 	}
 
 	return 0;
