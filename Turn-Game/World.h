@@ -3,6 +3,7 @@
 #define THING
 
 #include <vector>
+#include <string>
 
 class World
 {
@@ -13,7 +14,7 @@ private:
 	int depth;
 	std::vector<std::vector<std::vector<int>>> world;
 public:
-	World(std::vector<std::vector<std::vector<int>>> inputWorld, int height, int width, int depth);
+	World(std::string fileName, int height, int width, int depth);
 	std::vector<std::vector<int>> getSlice(int x, int z, int xDirection, int zDirection);
 };
 
