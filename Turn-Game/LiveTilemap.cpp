@@ -11,7 +11,7 @@ LiveTilemap::LiveTilemap(const sf::Texture* tileset, int tileWidth, int tileHeig
 	verts.setPrimitiveType(sf::Quads);
 }
 
-inline bool LiveTilemap::update(std::vector<std::vector<int>> tiles)
+bool LiveTilemap::update(std::vector<std::vector<int>> tiles, float tileWidth, float tileHeight)
 {
 	int width  = tiles.size(),
 		height = tiles[0].size();
@@ -25,19 +25,17 @@ inline bool LiveTilemap::update(std::vector<std::vector<int>> tiles)
 			int tu = t_id % perRow,
 				tv = t_id / perRow;
 			
-			sf::Vertex* quadIndex = &(verts[i + j * width * 4]);
+			sf::Vertex* quadIndex = &(verts[(i + j * width) * 4]);
 			
-			quadIndex[0].position = sf::Vector2f( i*t_width, j*t_height);
-			quadIndex[0].texCoords= sf::Vector2f(tu*t_width, tv*t_height);
-
-			quadIndex[1].position = sf::Vector2f( (i + 1)*t_width, j*t_height);
-			quadIndex[1].texCoords= sf::Vector2f((tu + 1)*t_width, tv*t_height);
-
-			quadIndex[2].position = sf::Vector2f( (i + 1)*t_width,  (j + 1)*t_height);
-			quadIndex[2].texCoords= sf::Vector2f((tu + 1)*t_width, (tv + 1)*t_height);
-
-			quadIndex[3].position = sf::Vector2f( i*t_width,  (j + 1)*t_height);
-			quadIndex[3].texCoords= sf::Vector2f(tu*t_width, (tv + 1)*t_height);
+			quadIndex[0].position = sf::Vector2f((float)      i*tileWidth, (float)      j*tileHeight);
+			quadIndex[1].position = sf::Vector2f((float)(i + 1)*tileWidth, (float)      j*tileHeight);
+			quadIndex[2].position = sf::Vector2f((float)(i + 1)*tileWidth, (float)(j + 1)*tileHeight);
+			quadIndex[3].position = sf::Vector2f((float)      i*tileWidth, (float)(j + 1)*tileHeight);
+			
+			quadIndex[0].texCoords= sf::Vector2f((float)      tu*t_width, (float)      tv*t_height);
+			quadIndex[1].texCoords= sf::Vector2f((float)(tu + 1)*t_width, (float)      tv*t_height);
+			quadIndex[2].texCoords= sf::Vector2f((float)(tu + 1)*t_width, (float)(tv + 1)*t_height);
+			quadIndex[3].texCoords= sf::Vector2f((float)      tu*t_width, (float)(tv + 1)*t_height);
 		}
 	return true;
 }
@@ -47,11 +45,4 @@ void LiveTilemap::draw(sf::RenderTarget & target, sf::RenderStates states) const
 	states.transform *= getTransform(); // getTransform() is defined by sf::Transformable
 	states.texture = tileset;
 	target.draw(verts, states);
-
 }
-
-
-LiveTilemap::~LiveTilemap()
-{
-}
-
