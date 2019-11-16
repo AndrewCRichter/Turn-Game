@@ -62,7 +62,7 @@ std::vector<std::vector<int>> World::getSlice(int x, int z, int xDirection, int 
 	std::vector<std::vector<int>> slice;
 	int i = 0;
 	for (; x >= 0 && x < width && z >= 0 && z < depth && world[x][z][0] != EMPTY; x -= xDirection, z -= zDirection);
-	for (x += xDirection, z += zDirection; x >= 0 && x < width && y >= 0 && z < depth && world[x][z][0] != EMPTY; ++i)
+	for (x += xDirection, z += zDirection; x >= 0 && x < width && z >= 0 && z < depth && world[x][z][0] != EMPTY; ++i)
 	{
 		slice.push_back(world[x][z]);
 	}

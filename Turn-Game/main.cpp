@@ -1,11 +1,32 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
+#include <string>
+#include "LiveTilemap.h"
 
 int main() {
-	sf::Window window(sf::VideoMode(500, 500), "AAAAA");
+	sf::RenderWindow window(sf::VideoMode(500, 500), "AAAAA");
 	sf::Clock timer;
 	sf::Time elapsed;
+	//INIT
+	sf::Texture txt;
+	std::string filen = "TestTexture.png";
+	if (! txt.loadFromFile(filen));
+	LiveTilemap l(&txt,16,16,2);
+
+	std::vector<std::vector<int>> map;
+	std::vector<int> a; a.push_back(2); a.push_back(0); a.push_back(0);
+	std::vector<int> b; b.push_back(3); b.push_back(1); b.push_back(0);
+	std::vector<int> c; c.push_back(4); c.push_back(3); c.push_back(1);
+	map.push_back(a);
+	map.push_back(b);
+	map.push_back(c);
 	
+	l.update(map,32,32);
+
+	sf::Transform trans;
+	trans.translate(0, 500).scale(1, -1);
+
 	while (window.isOpen()) {
 	
 		elapsed = timer.restart();
@@ -21,11 +42,12 @@ int main() {
 		
 		//GAME LOGIC HERE
 
-
-
 		//GAME GRAPHICS HERE
 
-		
+		window.clear(sf::Color(0, 200, 200));
+		window.draw(l, trans);
+		window.display();
+
 	}
 
 	return 0;
