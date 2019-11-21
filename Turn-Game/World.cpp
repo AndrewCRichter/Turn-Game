@@ -71,11 +71,12 @@ World::World(std::string fileName, int height, int width, int depth)
 	}
 }
 
-std::vector<std::vector<int>> World::getSlice(int x, int z, int xDirection, int zDirection)
+std::vector<std::vector<int>> World::getSlice(int x, int z, int xDirection, int zDirection, int* offset)
 {
 	std::vector<std::vector<int>> slice;
 	int i = 0;
-	for (; x >= 0 && x < width && z >= 0 && z < depth && world[x][z][0] != EMPTY; x -= xDirection, z -= zDirection);
+	*offset = -1;
+	for (; x >= 0 && x < width && z >= 0 && z < depth && world[x][z][0] != EMPTY; x -= xDirection, z -= zDirection) ++*offset;
 	for (x += xDirection, z += zDirection; x >= 0 && x < width && z >= 0 && z < depth && world[x][z][0] != EMPTY; ++i)
 	{
 		slice.push_back(world[x][z]);
