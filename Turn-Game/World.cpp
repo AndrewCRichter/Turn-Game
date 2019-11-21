@@ -2,6 +2,8 @@
 #include <fstream>
 #include <cmath>
 #include <cstdlib>
+
+int min(int a, int b) { return a < b ? a : b; }
 int WorldGenVal(int x, int y)
 {
 	return std::cmath.rand() % (1.25 * (std::abs(x - y)) + std::cmath.min(x, y);
@@ -42,7 +44,7 @@ World::World(std::string fileName, int height, int width, int depth)
 	inputWorld.open(fileName);
 	int i, j, k;
 	inputWorld >> i >> j >> k;
-	if (inputWorld.good) {
+	if (inputWorld.good()) {
 		world.resize(depth);
 		for (i = 0; i < depth && good; ++i)
 		{
@@ -54,7 +56,7 @@ World::World(std::string fileName, int height, int width, int depth)
 				{
 					int next;
 					inputWorld >> next;
-					if (!inputWorld.good)
+					if (!inputWorld.good())
 					{
 						good = false;
 					}
@@ -72,11 +74,12 @@ World::World(std::string fileName, int height, int width, int depth)
 	}
 }
 
-std::vector<std::vector<int>> World::getSlice(int x, int z, int xDirection, int zDirection)
+std::vector<std::vector<int>> World::getSlice(int x, int z, int xDirection, int zDirection, int* offset)
 {
 	std::vector<std::vector<int>> slice;
 	int i = 0;
-	for (; x >= 0 && x < width && z >= 0 && z < depth && world[x][z][0] != EMPTY; x -= xDirection, z -= zDirection);
+	*offset = -1;
+	for (; x >= 0 && x < width && z >= 0 && z < depth && world[x][z][0] != EMPTY; x -= xDirection, z -= zDirection) ++*offset;
 	for (x += xDirection, z += zDirection; x >= 0 && x < width && z >= 0 && z < depth && world[x][z][0] != EMPTY; ++i)
 	{
 		slice.push_back(world[x][z]);
@@ -86,8 +89,9 @@ std::vector<std::vector<int>> World::getSlice(int x, int z, int xDirection, int 
 }
 void WorldGen(std::string fileName, int height, int width, int depth)
 {
-	std::vector<vector<int>> flatWorld;
+	std::vector<std::vector<int>> flatWorld;
 	flatWorld.resize(depth);
+	int i;
 	for (i = 0; i < depth; ++i)
 	{
 		flatWorld[i].resize(width);

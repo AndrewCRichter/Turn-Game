@@ -1,7 +1,7 @@
 #include "Player.h"
 #include <cmath>
 
-Player::Player(float x, float y, int x0, int y0, const int direction[2], std::vector<std::vector<int>> slice)
+Player::Player(sf::Texture* spritesheet, float x, float y, int x0, int z0, const int direction[2], std::vector<std::vector<int>> slice)
 {
 	this->x = x;
 	this->y = y;
@@ -11,11 +11,19 @@ Player::Player(float x, float y, int x0, int y0, const int direction[2], std::ve
 	this->direction[0] = direction[0];
 	this->direction[1] = direction[1];
 	this->currentSlice = slice;
+	this->canJump = false;
+	this->spritesheet = spritesheet;
 }
 void Player::move(float x, float y)
 {
 	this->x += x;
 	this->y += y;
+}
+
+void Player::setVelocity(float dx, float dy)
+{
+	this->dx = dx;
+	this->dy = dy;
 }
 
 
@@ -82,18 +90,22 @@ void Player::processPhysics(float dt)
 
 			}
 		}
-	if (minDist != -1) {
+	canJump = false; //We can't jump by default.
+	if (anyhit) {
 		x += minDist * dx;
 		y += minDist * dy;
 		if (hitX)
 			dx = 0;
-		else
+		else{ //We hit ground
+			canJump = true;
 			dy = 0;
+		}
+			
 	}
 	else {
-	//Assuming no collisions
-	x += dx * dt;
-	y += dy * dt;
+		//No collisions
+		x += dx * dt;
+		y += dy * dt;
 	}
 }
 
