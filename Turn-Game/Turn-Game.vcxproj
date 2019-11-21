@@ -142,6 +142,10 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Release\Player.png" />
+    <Image Include="..\Release\TestTexture.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
