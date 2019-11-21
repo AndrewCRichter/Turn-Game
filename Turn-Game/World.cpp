@@ -2,21 +2,36 @@
 #include <fstream>
 #include <cmath>
 #include <cstdlib>
-std::vector<int> WorldGenHelper(std::vector<std::vector<int>> world, int height, int xStart, int xEnd, int zStart, int zEnd)
+int WorldGenVal(int x, int y)
 {
+	return std::cmath.rand() % (1.25 * (std::abs(x - y)) + std::cmath.min(x, y);
+}
+void WorldGenHelper(std::vector<std::vector<int>> &world, int height, int xStart, int xEnd, int zStart, int zEnd)
+{
+	bool again = false;
+	int xMid = xStart + (xEnd - xStart) / 2,
+		zMid = zStart + (zEnd - zStart) / 2
 	if (xEnd + 1 > xStart)
 	{
-		world[xStart + (xEnd - xStart) / 2][zStart] = std::cmath.rand() % (2 * (std::abs(world[xStart][zStart] - world[xEnd][zStart]) + std::cmath.min(world[xStart][zStart] ,world[xEnd][zStart]));
-		world[xStart + (xEnd - xStart) / 2][zEnd] = std::cmath.rand() % (2 * (std::abs(world[xStart][zEnd] - world[xEnd][zStart]) + std::cmath.min(world[xStart][zEnd] ,world[xEnd][zEnd]));
+		world[xMid][zStart] = WorldGenVal(world[xStart][zStart], world[xEnd][zStart]);
+		again = true;
 	}
 	if (zEnd + 1 > zStart)
 	{
-		world[xStart][zStart + (zEnd - zStart) / 2] = std::cmath.rand() % (2 * (std::abs(world[xStart][zStart] - world[xStart][zEnd]) + std::cmath.min(world[xStart][zStart] ,world[xStart][zEnd]));
-		world[xEnd][zStart + (zEnd - zStart) / 2] = std::cmath.rand() % (2 * (std::abs(world[xEnd][zStart] - world[xEnd][zEnd]) + std::cmath.min(world[xEnd][zStart] - world[xEnd][zEnd]));
+		world[xStart][zMid] = WorldGenVal(world[xStart][zStart], world[xStart][zEnd]);
+		again = true;
 	}
 	if (xEnd + 1 > xStart && zEnd + 1 > zStart)
 	{
-		world[xStart + (xEnd - xStart) / 2][zStart + (zEnd - zStart) / 2] = (world[xStart][zStart] + world[xEnd][zEnd] + world[xStart][zEnd] + world[xEnd][zStart]) / 4;
+		world[xMid][zMid] = WorldGenVal(world[xStart][zStart], world[xEnd][zEnd]);
+		again = true;
+	}
+	if (again)
+	{
+		WorldGenHelper(*world, height, xStart, xMid, zStart, zMid);
+		WorldGenHelper(*world, height, xStart, xMid, zStart, zMid);
+		WorldGenHelper(*world, height, xStart, xMid, zStart, zMid);
+		WorldGenHelper(*world, height, xStart, xMid, zStart, zMid);
 	}
 }
 
