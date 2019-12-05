@@ -1,15 +1,16 @@
 #include "Player.h"
 #include <cmath>
+#include "Tileset.h"
+#include "LiveTilemap.h"
 
-Player::Player(sf::Texture* spritesheet, float x, float y, int x0, int z0, const int direction[2], std::vector<std::vector<int>> slice)
+Player::Player(sf::Texture* spritesheet, float x, float y, int x0, int z0, Direction dir, std::vector<std::vector<int>> slice)
 {
 	this->x = x;
 	this->y = y;
 
 	this->x0 = x0;
 	this->z0 = z0;
-	this->direction[0] = direction[0];
-	this->direction[1] = direction[1];
+	this->currentDir = dir;
 	this->currentSlice = slice;
 	this->canJump = false;
 	this->spritesheet = spritesheet;
@@ -30,8 +31,8 @@ void Player::setVelocity(float dx, float dy)
 int Player::getCorner(int xoff, int yoff) {
 	int xp = (int)(x + xoff *  width / 2),
 		yp = (int)(y + yoff * height / 2);
-	if (0 > xp || xp > currentSlice.size()
-		|| 0 > yp || yp > currentSlice[0].size())
+	if (0 > xp || xp > (int)currentSlice.size()
+		|| 0 > yp || yp > (int)currentSlice[0].size())
 		return -1;
 	return currentSlice[xp][yp];
 }
@@ -54,8 +55,8 @@ void Player::processPhysics(float dt)
 			bool xLeft = dx < 0,
 				yDown = dy < 0;
 			while (totalDist < dt && !hit) {
-				int targetX = xp + (xLeft ? -1 : 1),
-					targetY = yp + (yDown ? -1 : 1);
+				int targetX = (int)(xp + (xLeft ? -1 : 1)),
+					targetY = (int)(yp + (yDown ? -1 : 1));
 				float xdis = (targetX - xp) / dx, ydis = (targetY - yp) / dy;
 
 				int block;
@@ -91,7 +92,7 @@ void Player::processPhysics(float dt)
 			}
 		}
 	canJump = false; //We can't jump by default.
-	if (anyhit) {
+	if (anyhit) { 
 		x += minDist * dx;
 		y += minDist * dy;
 		if (hitX)
@@ -120,11 +121,54 @@ float Player::getY()
 }
 int* Player::getXZ(int* xz)
 {
-	xz[0] = std::round(x0 + x * direction[0]);
-	xz[1] = std::round(z0 + x * direction[1]);
-	return xz;
+    xz[0] = (int)(x0 + x * DIRECTION_VALUES[currentDir][0]);
+    xz[1] = (int)(z0 + x * DIRECTION_VALUES[currentDir][1]);
+    return xz;
+}
+Direction Player::getDirection()
+{
+    return currentDir;
 }
 float Player::getOffset()
 {
 	return x - std::round(x);
+}
+
+void drawPlayer(sf::RenderTarget &rt, Player p, World w)
+{
+    drawPlayer(rt, p, w,sf::Transform()); //Pass in a blank transform.
+}
+
+void drawPlayer(sf::RenderTarget &rt, Player p, World w, sf::Transform transform) //Note that transform is applied last.
+{
+    int xz[2];
+    int offs;
+    Direction dir;
+    p.getXZ(xz);
+    dir = p.getDirection();
+    //Draw opaque layers, starting with the current layer.
+    Tileset t = w.getTileset();
+
+    std::vector<LiveTilemap> opaquePlanes;
+    std::vector<int> offsets;
+
+    offs = 0;
+    Direction backDirection = (Direction)((dir + 5) % 6);//The direction away from the camera is the first counterclockwise direction in the enum.
+    const int* dp = DIRECTION_VALUES[backDirection];
+    for (int i = 0;offs>=0;i++) {
+        LiveTilemap next(t);
+        std::vector<std::vector<int>> sheet = w.getSlice(xz[0] + i * dp[0], xz[1] + i * dp[1], dir, &offs);
+        if (offs >= 0) {
+            next.update(sheet);
+            opaquePlanes.push_back(next);
+            offsets.push_back(offs);
+        }
+    }
+    for (int i = offsets.size() - 1; i >= 0; i--) { //Draw the planes back-to-front.
+        sf::Transform translation;
+        translation.translate(t.tileWidth*(i/2.0f + offsets[i] + p.getOffset()), t.tileHeight*p.getY());
+        rt.draw(opaquePlanes[i], translation * transform);
+    }
+
+
 }
