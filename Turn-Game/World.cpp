@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cmath>
 #include <cstdlib>
+#include "LiveTilemap.h"
 
 int WorldGenVal(int x, int y)
 {
@@ -155,4 +156,28 @@ void WorldGen(std::string fileName, int height, int width, int depth)
 			}
 		}
 	}
+}
+
+void drawWorld(sf::RenderTarget & rt, World w, int x, int z, Direction d, sf::Transform transform)
+{
+    std::vector<LiveTilemap> opaquePlanes;
+    std::vector<int> offsets;
+
+    int offs = 0;
+    Direction backDirection = (Direction)((d + 5) % 6);//The direction away from the camera is the first counterclockwise direction in the enum.
+    const int* dp = DIRECTION_VALUES[backDirection];
+    for (int i = 0; offs >= 0; i++) {
+        LiveTilemap next(w.getTileset());
+        std::vector<std::vector<int>> sheet = w.getSlice(x + i * dp[0], z + i * dp[1], d, &offs);
+        if (offs >= 0) {
+            next.update(sheet);
+            opaquePlanes.push_back(next);
+            offsets.push_back(offs);
+        }
+    }
+    for (int i = offsets.size() - 1; i >= 0; i--) { //Draw the planes back-to-front.
+        sf::Transform translation;
+        translation.translate(t.tileWidth*(i / 2.0f + offsets[i] + p.getOffset()), t.tileHeight*p.getY());
+        rt.draw(opaquePlanes[i], translation * transform);
+    }
 }

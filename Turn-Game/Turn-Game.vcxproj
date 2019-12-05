@@ -135,6 +135,7 @@
     <ClCompile Include="LiveTilemap.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RenderableEntity.cpp" />
     <ClCompile Include="Tileset.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
@@ -142,6 +143,7 @@
     <ClInclude Include="Direction.h" />
     <ClInclude Include="LiveTilemap.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="RenderableEntity.h" />
     <ClInclude Include="Tileset.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>

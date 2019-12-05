@@ -5,8 +5,9 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "World.h"
+#include "RenderableEntity.h"
 
-class Player
+class Player : RenderableEntity
 {
 private:
 	const float gravity = 1;
@@ -21,7 +22,6 @@ private:
 	std::vector<std::vector<int>> currentSlice;
 	sf::Texture* spritesheet;
 	bool canJump; //True if the player is touching ground.
-
 	int getCorner(int xoff, int yoff);
 
 public:
@@ -34,6 +34,7 @@ public:
 	int* getXZ(int* xz); //Gets the world XZ position of the player. Input is a pointer to an array of size 2.
     Direction getDirection();
 	float getOffset(); //Gets player's offset from the nearest block.
+    void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 };
 
 //Draws a player to the screen
