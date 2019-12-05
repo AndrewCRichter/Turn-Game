@@ -3,12 +3,14 @@
 #include <cmath>
 #include <cstdlib>
 #include "LiveTilemap.h"
+#include <iostream>
+#include <string>
 
-int WorldGenVal(int x, int y)
+int World::WorldGenVal(int x, int y)
 {
 	return std::rand() % (1.5 * (x < y ? y - x : x - y)) + x < y ? x : y;
 }
-void WorldGenHelper(std::vector<std::vector<int>> &world, int xStart, int xEnd, int zStart, int zEnd)
+void World::WorldGenHelper(std::vector<std::vector<int>> &world, int xStart, int xEnd, int zStart, int zEnd)
 {
 	bool again = false;
 	int xMid = xStart + (xEnd - xStart) / 2,
@@ -48,32 +50,57 @@ void WorldGenHelper(std::vector<std::vector<int>> &world, int xStart, int xEnd, 
 
 World::World(std::string fileName, Tileset ts, int height, int width, int depth)
 {
+	const std::string SEP = "\n",
+				COMMA = ",";
+	int height,
+		width,
+		depth,
+		next;
+	bool iRow,
+		jRow,
+		kRow;
     this->tiles = ts;
 	bool good = true;
+	std::string ascii;
 	std::ifstream inputWorld;
 	inputWorld.open(fileName);
 	int i, j, k;
-	inputWorld >> i >> j >> k;
+	inputWorld >> height >> ascii >> width >> ascii >> depth >> ascii;
 	if (inputWorld.good()) {
 		world.resize(depth);
 		for (i = 0; i < depth && good; ++i)
 		{
 			world[i].resize(width);
+			jRow = true;
 			for (j = 0; j < width && good; ++j)
 			{
+				kRow = true;
 				world.resize(height);
-				for (k = 0; k < height && good; ++k)
+				for (k = 0; kRow && good; ++k)
 				{
-					int next;
-					inputWorld >> next;
+					inputWorld >> next >> ascii;
 					if (!inputWorld.good())
 					{
 						good = false;
 					}
 					else
 					{
-						
 						world[i][j][k] = next;
+						if (ascii != COMMA && ascii == SEP)
+						{
+							kRow = false;
+						}
+						else if (ascii == SEP + SEP)
+						{
+							jRow = false;
+							kRow = false;
+						}
+						else
+						{
+							iRow = false;
+							jRow = false;
+							kRow = false;
+						}
 					}
 				}
 			}
@@ -115,8 +142,10 @@ Tileset World::getTileset()
 {
     return tiles;
 }
-void WorldGen(std::string fileName, int height, int width, int depth)
+void World::WorldGen(std::string fileName, int height, int width, int depth,int cut)
 {
+	const char COMMA = ',';
+	std::ofstream file;
 	std::vector<std::vector<std::vector<int>>> world;
 	std::vector<std::vector<int>> flatWorld;
 	int i, j, k;
@@ -133,6 +162,7 @@ void WorldGen(std::string fileName, int height, int width, int depth)
 	WorldGenHelper(flatWorld, 0, width, 0, depth);
 
 	world.resize(depth);
+	file.open(fileName);
 	for (i = 0; i < depth; ++i)
 	{
 		world[i].resize(width);
@@ -154,6 +184,29 @@ void WorldGen(std::string fileName, int height, int width, int depth)
 					world[i][j][k] = 2;
 				}
 			}
+		}
+	}
+	file << height << COMMA << width << COMMA << depth << std::endl;
+	for (i = 0; i < depth; ++i)
+	{
+		for (j = 0; j < width; ++j)
+		{
+			for (k = 0; k < height; ++k)
+			{
+				file << world[i][j][k];
+				if (k != height)
+				{
+					file << COMMA;
+				}
+				else
+				{
+					file << std::endl;
+				}
+			}
+		}
+		if (i != height)
+		{
+			file << std::endl;
 		}
 	}
 }
