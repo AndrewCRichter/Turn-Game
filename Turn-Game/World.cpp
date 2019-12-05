@@ -1,8 +1,8 @@
 #include "World.h"
+#include "LiveTilemap.h"
 #include <fstream>
 #include <cmath>
 #include <cstdlib>
-#include "LiveTilemap.h"
 #include <iostream>
 #include <string>
 
@@ -48,23 +48,32 @@ void World::WorldGenHelper(std::vector<std::vector<int>> &world, int xStart, int
 	}
 }
 
-World::World(std::string fileName, Tileset ts, int height, int width, int depth)
+World::World(std::string fileName)
 {
 	const std::string SEP = "\n",
 				COMMA = ",";
 	int height,
 		width,
 		depth,
-		next;
+		next,
+		tileHeight,
+		tileWidth,
+		tilesPerRow;
 	bool iRow,
 		jRow,
 		kRow;
-    this->tiles = ts;
 	bool good = true;
+	int i, j, k;
 	std::string ascii;
 	std::ifstream inputWorld;
+	sf::Texture worldTxtures;
 	inputWorld.open(fileName);
-	int i, j, k;
+	if (!worldTxtures.loadFromFile(inputWorld.getline))
+	{
+		std::cerr << "FAILED READING PLAYER TEXTURE\n";
+	}
+	inputWorld >> tileHeight >> ascii >> tileWidth >> ascii >> tilesPerRow >> ascii;
+	this->tiles = { &worldTxtures, tileHeight, tileWidth, tilesPerRow };
 	inputWorld >> height >> ascii >> width >> ascii >> depth >> ascii;
 	if (inputWorld.good()) {
 		world.resize(depth);
@@ -142,7 +151,7 @@ Tileset World::getTileset()
 {
     return tiles;
 }
-void World::WorldGen(std::string fileName, int height, int width, int depth,int cut)
+void World::WorldGen(std::string fileName, int height, int width, int depth, int cut, std::string pngFile, int tileHeight, int tileWidth, int tilesPerRow)
 {
 	const char COMMA = ',';
 	std::ofstream file;
@@ -190,6 +199,8 @@ void World::WorldGen(std::string fileName, int height, int width, int depth,int 
 			}
 		}
 	}
+	file << pngFile << std::endl;
+	file << tileHeight << COMMA << tileWidth << COMMA << tilesPerRow << std::endl;
 	file << height << COMMA << width << COMMA << depth << std::endl;
 	for (i = 0; i < depth; ++i)
 	{

@@ -18,14 +18,14 @@ private:
 	int depth;
 	std::vector<std::vector<std::vector<int>>> world;
     Tileset tiles;
-    
-public:
 	int WorldGenVal(int x, int y);
 	void WorldGenHelper(std::vector<std::vector<int>> &world, int xStart, int xEnd, int zStart, int zEnd);
-	World(std::string fileName, Tileset ts, int height, int width, int depth); //TODO: Move texture directory into file.
+    
+public:
+	World(std::string fileName); //TODO: Move texture directory into file.
     World(std::vector<std::vector<std::vector<int>>> world, Tileset ts, int height, int width, int depth);
 	std::vector<std::vector<int>> getSlice(int x, int z, Direction d, int* offset);
-	void WorldGen(std::string fileName, int height, int width, int depth, int cut);
+	void WorldGen(std::string fileName, int height, int width, int depth, int cut, std::string pngFile, int tileHeight, int tileWidth, int tilesPerRow);
     Tileset getTileset();
 };
 

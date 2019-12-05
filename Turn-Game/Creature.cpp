@@ -1,9 +1,12 @@
-#include "Player.h"
-#include "Tileset.h"
-#include "LiveTilemap.h"
-#include <cmath>
+#include "Creature.h"
 
-Player::Player(sf::Texture* spritesheet, float x, float y, int x0, int z0, Direction dir, std::vector<std::vector<int>> slice)
+
+
+Creature::Creature()
+{
+}
+
+Creature::~Creature(sf::Texture* spritesheet, float x, float y, int x0, int z0, Direction dir, std::vector<std::vector<int>> slice)
 {
 	this->x = x;
 	this->y = y;
@@ -15,20 +18,20 @@ Player::Player(sf::Texture* spritesheet, float x, float y, int x0, int z0, Direc
 	this->canJump = false;
 	this->spritesheet = spritesheet;
 }
-void Player::move(float x, float y)
+void Creature::move(float x, float y)
 {
 	this->x += x;
 	this->y += y;
 }
 
-void Player::setVelocity(float dx, float dy)
+void Creature::setVelocity(float dx, float dy)
 {
 	this->dx = dx;
 	this->dy = dy;
 }
 
 
-int Player::getCorner(int xoff, int yoff) {
+int Creature::getCorner(int xoff, int yoff) {
 	int xp = (int)(x + xoff *  width / 2),
 		yp = (int)(y + yoff * height / 2);
 	if (0 > xp || xp > (int)currentSlice.size()
@@ -37,7 +40,7 @@ int Player::getCorner(int xoff, int yoff) {
 	return currentSlice[xp][yp];
 }
 
-void Player::processPhysics(float dt)
+void Creature::processPhysics(float dt)
 {
 	dy += dt * gravity;
 	//Check collision with terrain
@@ -45,7 +48,7 @@ void Player::processPhysics(float dt)
 	float scale = std::sqrt(dx * dx + dy * dy);
 
 	float minDist = -1;
-	bool anyhit=false, hitX=false;
+	bool anyhit = false, hitX = false;
 	for (int xoff = -1; xoff < 2; xoff += 2)
 		for (int yoff = -1; yoff < 2; yoff++) {
 			float xp = x + xoff * width / 2,
@@ -92,16 +95,16 @@ void Player::processPhysics(float dt)
 			}
 		}
 	canJump = false; //We can't jump by default.
-	if (anyhit) { 
+	if (anyhit) {
 		x += minDist * dx;
 		y += minDist * dy;
 		if (hitX)
 			dx = 0;
-		else{ //We hit ground
+		else { //We hit ground
 			canJump = true;
 			dy = 0;
 		}
-			
+
 	}
 	else {
 		//No collisions
@@ -111,43 +114,43 @@ void Player::processPhysics(float dt)
 }
 
 
-float Player::getX()
+float Creature::getX()
 {
 	return x;
 }
-float Player::getY()
+float Creature::getY()
 {
 	return y;
 }
-int* Player::getXZ(int* xz)
+int* Creature::getXZ(int* xz)
 {
-    xz[0] = (int)(x0 + x * DIRECTION_VALUES[currentDir][0]);
-    xz[1] = (int)(z0 + x * DIRECTION_VALUES[currentDir][1]);
-    return xz;
+	xz[0] = (int)(x0 + x * DIRECTION_VALUES[currentDir][0]);
+	xz[1] = (int)(z0 + x * DIRECTION_VALUES[currentDir][1]);
+	return xz;
 }
-Direction Player::getDirection()
+Direction Creature::getDirection()
 {
-    return currentDir;
+	return currentDir;
 }
-float Player::getOffset()
+float Creature::getOffset()
 {
 	return x - std::round(x);
 }
 
-void drawPlayer(sf::RenderTarget &rt, Player p)
+void drawCreature(sf::RenderTarget &rt, Player p)
 {
-    drawPlayer(rt, p, sf::Transform()); //Pass in a blank transform.
+	drawCreature(rt, p, sf::Transform()); //Pass in a blank transform.
 }
 
-void drawPlayer(sf::RenderTarget &rt, Player p, sf::Transform transform) //Note that transform is applied last.
+void drawCreature(sf::RenderTarget &rt, Player p, sf::Transform transform) //Note that transform is applied last.
 {
-    int xz[2];
-    int offs;
-    Direction dir;
-    p.getXZ(xz);
-    dir = p.getDirection();
-    //Draw opaque layers, starting with the current layer.
-    Tileset t = w.getTileset();
+	int xz[2];
+	int offs;
+	Direction dir;
+	p.getXZ(xz);
+	dir = p.getDirection();
+	//Draw opaque layers, starting with the current layer.
+	Tileset t = w.getTileset();
 
 
 
