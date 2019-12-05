@@ -47,7 +47,7 @@ void World::WorldGenHelper(std::vector<std::vector<int>> &world, int xStart, int
 	}
 }
 
-World::World(std::string fileName, int height, int width, int depth)
+World::World(std::string fileName, Tileset ts, int height, int width, int depth)
 {
 	const std::string SEP = "\n",
 				COMMA = ",";
@@ -58,6 +58,7 @@ World::World(std::string fileName, int height, int width, int depth)
 	bool iRow,
 		jRow,
 		kRow;
+    this->tiles = ts;
 	bool good = true;
 	std::string ascii;
 	std::ifstream inputWorld;
@@ -109,20 +110,38 @@ World::World(std::string fileName, int height, int width, int depth)
 	}
 }
 
-std::vector<std::vector<int>> World::getSlice(int x, int z, int xDirection, int zDirection, int* offset)
+World::World(std::vector<std::vector<std::vector<int>>> world, Tileset ts, int height, int width, int depth)
 {
-	std::vector<std::vector<int>> slice;
+    this->world = world;
+    this->tiles = ts;
+    this->height = height;
+    this->width = width;
+    this->depth = depth;
+}
+
+
+std::vector<std::vector<int>> World::getSlice(int x, int z, Direction dir, int* offset)
+{
+    int xDirection = DIRECTION_VALUES[dir][0],
+        zDirection = DIRECTION_VALUES[dir][1];
+    std::vector<std::vector<int>> slice;
 	int i = 0;
 	*offset = -1;
-	for (; x >= 0 && x < width && z >= 0 && z < depth && world[x][z][0] != EMPTY; x -= xDirection, z -= zDirection) ++*offset;
-	for (x += xDirection, z += zDirection; x >= 0 && x < width && z >= 0 && z < depth && world[x][z][0] != EMPTY; ++i)
+    for (; x >= 0 && x < width && z >= 0 && z < depth && world[x][z][0] != EMPTY; x -= xDirection, z -= zDirection) {
+        ++*offset;
+    }
+	for (x += xDirection, z += zDirection; x >= 0 && x < width && z >= 0 && z < depth && world[x][z][0] != EMPTY; x += xDirection, z += zDirection)
 	{
 		slice.push_back(world[x][z]);
 	}
 	return slice;
 
 }
-void World::WorldGen(std::string fileName, int height, int width, int depth, int cut)
+Tileset World::getTileset()
+{
+    return tiles;
+}
+void World::WorldGen(std::string fileName, int height, int width, int depth,int cut)
 {
 	const char COMMA = ',';
 	std::ofstream file;
