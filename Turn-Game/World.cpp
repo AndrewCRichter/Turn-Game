@@ -67,11 +67,11 @@ World::World(std::string fileName, Tileset ts, int height, int width, int depth)
 	inputWorld >> height >> ascii >> width >> ascii >> depth >> ascii;
 	if (inputWorld.good()) {
 		world.resize(depth);
-		for (i = 0; i < depth && good; ++i)
+		for (i = 0; iRow && good; ++i)
 		{
 			world[i].resize(width);
 			jRow = true;
-			for (j = 0; j < width && good; ++j)
+			for (j = 0; jRow && good; ++j)
 			{
 				kRow = true;
 				world.resize(height);
@@ -170,7 +170,11 @@ void World::WorldGen(std::string fileName, int height, int width, int depth,int 
 			world.resize(height);
 			for (k = 0; k < height; ++k)
 			{
-				if (k < flatWorld[i][j])
+				if (i == j + cut || i == j - cut)
+				{
+					world[i][j][k] = -1;
+				}
+				else if (k < flatWorld[i][j])
 				{
 					world[i][j][k] = 1;
 				}
