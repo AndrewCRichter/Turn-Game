@@ -6,6 +6,7 @@
 #include "LiveTilemap.h"
 #include "World.h"
 #include "Player.h"
+#include "main.h"
 
 int main() {
 	sf::RenderWindow window(sf::VideoMode(500, 500), "AAAAA");
@@ -87,8 +88,9 @@ int main() {
 		//GAME GRAPHICS HERE
 
         window.clear(sf::Color(0, 200, 200));
-        drawWorld(window, w, );
-        drawPlayer(window, p, w);
+        int xz[2];
+        p.getXZ(xz);
+        drawWorld(window, w, xz[0],xz[1],p.getDirection());
         //window.draw(l, trans);
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         

@@ -7,7 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include "Tileset.h"
 #include "Direction.h"
-
+#include "RenderableEntity.h"
 
 class World
 {
@@ -29,8 +29,8 @@ public:
     Tileset getTileset();
 };
 
-void drawWorldOpaque(sf::RenderTarget &rt, World w, int x, int z, Direction d);
-void drawWorldOpaque(sf::RenderTarget &rt, World w, int x, int z, Direction d, sf::Transform transform);
+void drawWorld(sf::RenderTarget &rt, World w, std::vector<RenderableEntity> entities, int x, int z, Direction d);
+void drawWorld(sf::RenderTarget &rt, World w, std::vector<RenderableEntity> entities, int x, int z, Direction d, sf::Transform transform);
 
 
 #endif // THING

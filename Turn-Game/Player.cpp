@@ -134,6 +134,11 @@ float Player::getOffset()
 	return x - std::round(x);
 }
 
+void Player::draw(sf::RenderTarget & target, sf::RenderStates states) const
+{
+    //Draw the player
+}
+
 void drawPlayer(sf::RenderTarget &rt, Player p)
 {
     drawPlayer(rt, p, sf::Transform()); //Pass in a blank transform.

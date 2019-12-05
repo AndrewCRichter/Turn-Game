@@ -37,8 +37,4 @@ public:
     void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 };
 
-//Draws a player to the screen
-void drawPlayer(sf::RenderTarget &rt, Player p, World w);
-void drawPlayer(sf::RenderTarget &rt, Player p, World w,sf::Transform transform);
-
 #endif //TURN_GAME_PLAYER_H
