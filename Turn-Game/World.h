@@ -29,8 +29,8 @@ public:
     Tileset getTileset();
 };
 
-void drawWorld(sf::RenderTarget &rt, World w, int x, int z, Direction d);
-void drawWorld(sf::RenderTarget &rt, World w, int x, int z, Direction d, sf::Transform transform);
+void drawWorldOpaque(sf::RenderTarget &rt, World w, int x, int z, Direction d);
+void drawWorldOpaque(sf::RenderTarget &rt, World w, int x, int z, Direction d, sf::Transform transform);
 
 
 #endif // THING

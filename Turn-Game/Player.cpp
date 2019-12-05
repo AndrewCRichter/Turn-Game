@@ -134,12 +134,12 @@ float Player::getOffset()
 	return x - std::round(x);
 }
 
-void drawPlayer(sf::RenderTarget &rt, Player p, World w)
+void drawPlayer(sf::RenderTarget &rt, Player p)
 {
-    drawPlayer(rt, p, w,sf::Transform()); //Pass in a blank transform.
+    drawPlayer(rt, p, sf::Transform()); //Pass in a blank transform.
 }
 
-void drawPlayer(sf::RenderTarget &rt, Player p, World w, sf::Transform transform) //Note that transform is applied last.
+void drawPlayer(sf::RenderTarget &rt, Player p, sf::Transform transform) //Note that transform is applied last.
 {
     int xz[2];
     int offs;
@@ -149,26 +149,6 @@ void drawPlayer(sf::RenderTarget &rt, Player p, World w, sf::Transform transform
     //Draw opaque layers, starting with the current layer.
     Tileset t = w.getTileset();
 
-    std::vector<LiveTilemap> opaquePlanes;
-    std::vector<int> offsets;
-
-    offs = 0;
-    Direction backDirection = (Direction)((dir + 5) % 6);//The direction away from the camera is the first counterclockwise direction in the enum.
-    const int* dp = DIRECTION_VALUES[backDirection];
-    for (int i = 0;offs>=0;i++) {
-        LiveTilemap next(t);
-        std::vector<std::vector<int>> sheet = w.getSlice(xz[0] + i * dp[0], xz[1] + i * dp[1], dir, &offs);
-        if (offs >= 0) {
-            next.update(sheet);
-            opaquePlanes.push_back(next);
-            offsets.push_back(offs);
-        }
-    }
-    for (int i = offsets.size() - 1; i >= 0; i--) { //Draw the planes back-to-front.
-        sf::Transform translation;
-        translation.translate(t.tileWidth*(i/2.0f + offsets[i] + p.getOffset()), t.tileHeight*p.getY());
-        rt.draw(opaquePlanes[i], translation * transform);
-    }
 
 
 }
