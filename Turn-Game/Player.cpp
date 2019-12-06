@@ -2,6 +2,7 @@
 #include "Tileset.h"
 #include "LiveTilemap.h"
 #include <cmath>
+#include <SFML/Graphics.hpp>
 
 Player::Player(sf::Texture* spritesheet, float x, float y, int x0, int z0, Direction dir, std::vector<std::vector<int>> slice)
 {
@@ -47,7 +48,7 @@ void Player::processPhysics(float dt)
 	float minDist = -1;
 	bool anyhit=false, hitX=false;
 	for (int xoff = -1; xoff < 2; xoff += 2)
-		for (int yoff = -1; yoff < 2; yoff++) {
+		for (int yoff = 0; yoff < 3; yoff++) {
 			float xp = x + xoff * width / 2,
 				yp = y + yoff * height / 2;
 			float totalDist = 0;
@@ -101,7 +102,6 @@ void Player::processPhysics(float dt)
 			canJump = true;
 			dy = 0;
 		}
-			
 	}
 	else {
 		//No collisions
@@ -136,15 +136,15 @@ float Player::getOffset()
 
 void Player::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
+    states.transform *= getTransform(); // getTransform() is defined by sf::Transformable
+    //states.texture = tiles.tileTextures;
+    sf::RectangleShape pRect(sf::Vector2f(width,height));
+    pRect.setTexture(spritesheet);
+    target.draw(pRect,states);
     //Draw the player
 }
 
-void drawPlayer(sf::RenderTarget &rt, Player p)
-{
-    drawPlayer(rt, p, sf::Transform()); //Pass in a blank transform.
-}
-
-void drawPlayer(sf::RenderTarget &rt, Player p, sf::Transform transform) //Note that transform is applied last.
+/*void drawPlayer(sf::RenderTarget &rt, Player p, sf::Transform transform) //Note that transform is applied last.
 {
     int xz[2];
     int offs;
@@ -156,4 +156,4 @@ void drawPlayer(sf::RenderTarget &rt, Player p, sf::Transform transform) //Note 
 
 
 
-}
+}*/

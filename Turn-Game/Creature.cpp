@@ -6,7 +6,7 @@ Creature::Creature()
 {
 }
 
-Creature::~Creature(sf::Texture* spritesheet, float x, float y, int x0, int z0, Direction dir, std::vector<std::vector<int>> slice)
+Creature::Creature(sf::Texture* spritesheet, float x, float y, int x0, int z0, Direction dir, std::vector<std::vector<int>> slice)
 {
 	this->x = x;
 	this->y = y;
@@ -15,7 +15,6 @@ Creature::~Creature(sf::Texture* spritesheet, float x, float y, int x0, int z0, 
 	this->z0 = z0;
 	this->currentDir = dir;
 	this->currentSlice = slice;
-	this->canJump = false;
 	this->spritesheet = spritesheet;
 }
 void Creature::move(float x, float y)
@@ -28,16 +27,6 @@ void Creature::setVelocity(float dx, float dy)
 {
 	this->dx = dx;
 	this->dy = dy;
-}
-
-
-int Creature::getCorner(int xoff, int yoff) {
-	int xp = (int)(x + xoff *  width / 2),
-		yp = (int)(y + yoff * height / 2);
-	if (0 > xp || xp > (int)currentSlice.size()
-		|| 0 > yp || yp > (int)currentSlice[0].size())
-		return -1;
-	return currentSlice[xp][yp];
 }
 
 void Creature::processPhysics(float dt)
@@ -94,14 +83,12 @@ void Creature::processPhysics(float dt)
 
 			}
 		}
-	canJump = false; //We can't jump by default.
 	if (anyhit) {
 		x += minDist * dx;
 		y += minDist * dy;
 		if (hitX)
 			dx = 0;
 		else { //We hit ground
-			canJump = true;
 			dy = 0;
 		}
 
@@ -135,23 +122,4 @@ Direction Creature::getDirection()
 float Creature::getOffset()
 {
 	return x - std::round(x);
-}
-
-void drawCreature(sf::RenderTarget &rt, Player p)
-{
-	drawCreature(rt, p, sf::Transform()); //Pass in a blank transform.
-}
-
-void drawCreature(sf::RenderTarget &rt, Player p, sf::Transform transform) //Note that transform is applied last.
-{
-	int xz[2];
-	int offs;
-	Direction dir;
-	p.getXZ(xz);
-	dir = p.getDirection();
-	//Draw opaque layers, starting with the current layer.
-	Tileset t = w.getTileset();
-
-
-
 }
