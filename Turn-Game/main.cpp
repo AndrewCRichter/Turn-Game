@@ -81,6 +81,7 @@ int main() {
 			// "close requested" event: we close the window
 			if (event.type == sf::Event::Closed)
 				window.close();
+
 		}
 		
 		//GAME LOGIC HERE
