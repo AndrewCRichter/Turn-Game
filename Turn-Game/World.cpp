@@ -8,14 +8,14 @@
 
 int World::WorldGenVal(int x, int y)
 {
-	return std::rand() % (int)(1.5 * (x < y ? y - x : x - y)) + x < y ? x : y;
+	return std::rand() % (int)(1.5 * (x < y ? y - x : x - y)+1) + x < y ? x : y;
 }
 void World::WorldGenHelper(std::vector<std::vector<int>> &world, int xStart, int xEnd, int zStart, int zEnd)
 {
 	bool again = false;
 	int xMid = xStart + (xEnd - xStart) / 2,
 		zMid = zStart + (zEnd - zStart) / 2;
-	if (xEnd + 1 > xStart)
+	if (xEnd - 1 > xStart)
 	{
 		world[xMid][zEnd] = WorldGenVal(world[xStart][zEnd], world[xEnd][zEnd]);
 		if (zStart == 0)
@@ -24,7 +24,7 @@ void World::WorldGenHelper(std::vector<std::vector<int>> &world, int xStart, int
 		}
 		again = true;
 	}
-	if (zEnd + 1 > zStart)
+	if (zEnd - 1 > zStart)
 	{
 		world[xEnd][zMid] = WorldGenVal(world[xEnd][zStart], world[xEnd][zEnd]);
 		if (xStart == 0)
@@ -33,7 +33,7 @@ void World::WorldGenHelper(std::vector<std::vector<int>> &world, int xStart, int
 		}
 		again = true;
 	}
-	if (xEnd + 1 > xStart && zEnd + 1 > zStart)
+	if (xEnd - 1 > xStart && zEnd - 1 > zStart)
 	{
 		world[xMid][zMid] = WorldGenVal(world[xStart][zStart], world[xEnd][zEnd]);
 		again = true;
@@ -170,10 +170,10 @@ void World::WorldGen(std::string fileName, std::string pngFile, int depth, int w
 		flatWorld[i].resize(width);
 	}
 	flatWorld[0][0] = height / 2;
-	flatWorld[0][width] = height / 3;
-	flatWorld[depth][0] = height / 4;
-	flatWorld[depth][width] = height / 5;
-	WorldGenHelper(flatWorld, 0, width, 0, depth);
+	flatWorld[0][width-1] = height / 3;
+	flatWorld[depth-1][0] = height / 4;
+	flatWorld[depth-1][width-1] = height / 5;
+	World::WorldGenHelper(flatWorld, 0, width-1, 0, depth-1);
 
 	world.resize(depth);
 	file.open(fileName);
@@ -182,7 +182,7 @@ void World::WorldGen(std::string fileName, std::string pngFile, int depth, int w
 		world[i].resize(width);
 		for (j = 0; j < width; ++j)
 		{
-			world.resize(height);
+			world[i][j].resize(height);
 			for (k = 0; k < height; ++k)
 			{
 				if (i == j + cut || i == j - cut)
