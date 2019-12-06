@@ -52,6 +52,7 @@ World::World(std::string fileName)
 {
 	const std::string SEP = "\n",
 				COMMA = ",";
+	fileName += ".turn";
 	int height,
 		width,
 		depth,
@@ -120,7 +121,7 @@ World::World(std::string fileName)
 	}
 }
 
-World::World(std::vector<std::vector<std::vector<int>>> world, Tileset ts, int height, int width, int depth)
+World::World(std::vector<std::vector<std::vector<int>>> world, Tileset ts, int depth, int width, int height)
 {
     this->world = world;
     this->tiles = ts;
@@ -151,12 +152,13 @@ Tileset World::getTileset()
 {
     return tiles;
 }
-void World::WorldGen(std::string fileName, int height, int width, int depth, int cut, std::string pngFile, int tileHeight, int tileWidth, int tilesPerRow)
+void World::WorldGen(std::string fileName, std::string pngFile, int depth, int width, int height, int cut, int tileHeight, int tileWidth, int tilesPerRow)
 {
 	const char COMMA = ',';
 	std::ofstream file;
 	std::vector<std::vector<std::vector<int>>> world;
 	std::vector<std::vector<int>> flatWorld;
+	fileName += ".turn";
 	int i, j, k;
 
 	flatWorld.resize(depth);
@@ -186,7 +188,7 @@ void World::WorldGen(std::string fileName, int height, int width, int depth, int
 				}
 				else if (k < flatWorld[i][j])
 				{
-					world[i][j][k] = 1;
+					world[i][j][k] = 2;
 				}
 				else if(k > flatWorld[i][j])
 				{
@@ -194,7 +196,7 @@ void World::WorldGen(std::string fileName, int height, int width, int depth, int
 				}
 				else
 				{
-					world[i][j][k] = 2;
+					world[i][j][k] = 1;
 				}
 			}
 		}

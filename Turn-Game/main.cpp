@@ -9,6 +9,8 @@
 #include "main.h"
 
 int main() {
+	World::WorldGen("Test World", "Test Texture", 64, 64, 64, 64, 64, 64, 3);
+	
 	sf::RenderWindow window(sf::VideoMode(500, 500), "AAAAA");
 	sf::Clock timer;
 	sf::Time elapsed;
@@ -99,6 +101,6 @@ int main() {
 		window.display();
 
 	}
-
+	
 	return 0;
 }

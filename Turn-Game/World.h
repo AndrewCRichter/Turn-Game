@@ -25,7 +25,7 @@ public:
 	World(std::string fileName); //TODO: Move texture directory into file.
     World(std::vector<std::vector<std::vector<int>>> world, Tileset ts, int height, int width, int depth);
 	std::vector<std::vector<int>> getSlice(int x, int z, Direction d, int* offset);
-	void WorldGen(std::string fileName, int height, int width, int depth, int cut, std::string pngFile, int tileHeight, int tileWidth, int tilesPerRow);
+	static void WorldGen(std::string fileName, std::string pngFile, int height, int width, int depth, int cut, int tileHeight, int tileWidth, int tilesPerRow);
     Tileset getTileset();
 };
 
