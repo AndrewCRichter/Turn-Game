@@ -10,10 +10,7 @@
 
 int main() {
 	
-    std::cout << "1" << std::endl;
     //World::WorldGen("Test World", "Test Texture", 10, 10, 10, 4, 64, 64, 3);
-
-    std::cout << "2" << std::endl;
 
 	sf::RenderWindow window(sf::VideoMode(500, 500), "Turn");
 	sf::Clock timer;
@@ -29,7 +26,6 @@ int main() {
     if (!playerTex.loadFromFile("Player.png")) {
         std::cerr << "FAILED READING PLAYER TEXTURE\n";
     }
-    std::cout << "3" << std::endl;
 
     Tileset t = { &txt, 16, 16, 2 };
 	LiveTilemap l(t);
@@ -63,7 +59,6 @@ int main() {
 		}
 	}
 
-    std::cout << "4" << std::endl;
 
 	sf::Transform trans;
 	trans.translate(20, 500).scale(2, -2);
@@ -71,9 +66,8 @@ int main() {
     World w(map, t, map[0][0].size(), map.size(), map[0].size());
     int offs = 0;
     std::vector<std::vector<int>> slice = w.getSlice(0, 0, Direction::DOWN, &offs);
-    Player p(&playerTex, 0.5, 3, 0, 0, Direction::DOWN, slice);
+    Player p(&playerTex, 0.5, 3, 0, 0, Direction::RIGHT, slice);
 
-    std::cout << "5" << std::endl;
     while (window.isOpen()) {
 	
 		elapsed = timer.restart();
@@ -92,16 +86,13 @@ int main() {
 
 		//GAME GRAPHICS HERE
 
-        std::cout << "6" << std::endl;
         window.clear(sf::Color(0, 200, 200));
         int xz[2];
         p.getXZ(xz);
         std::vector<RenderableEntity*> entities;
         entities.push_back((RenderableEntity*) &p);
 
-        std::cout << "7" << std::endl;
         drawWorld(window, w, entities, xz[0],xz[1],p.getDirection());
-        std::cout << "8" << std::endl;
         //window.draw(l, trans);
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         

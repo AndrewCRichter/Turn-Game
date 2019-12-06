@@ -147,6 +147,7 @@ std::vector<std::vector<int>> World::getSlice(int x, int z, Direction dir, int* 
 	{
 		slice.push_back(world[x][z]);
 	}
+    std::cout << "HORSE: " << *offset << std::endl;
 	return slice;
 
 }
@@ -240,8 +241,7 @@ void drawWorld(sf::RenderTarget & rt, World w, std::vector<RenderableEntity*> en
 
 void drawWorld(sf::RenderTarget & rt, World w, std::vector<RenderableEntity*> entities, int x, int z, Direction d, sf::Transform transform)
 {
-    std::cout << "ENTERED drawWorld" << std::endl;
-
+    
     std::vector<sf::Drawable*> drawObjects;
     std::vector<float> offsets, heights,depths;
 
@@ -250,9 +250,9 @@ void drawWorld(sf::RenderTarget & rt, World w, std::vector<RenderableEntity*> en
     const int* fdp = DIRECTION_VALUES[frontDirection];
     int max = 1;
 
-    std::cout << "SEARCHING FOR MAX FORWARD" << std::endl;
-    for(;offs >= 0; max++)w.getSlice(x + max * fdp[0], z + max * fdp[1], d, &depth);
-    std::cout << "FOUND MAX FORWARD: " << max << " Counting down." << std::endl;
+    for (; offs >= 0; max++) {
+        w.getSlice(x + max * fdp[0], z + max * fdp[1], d, &offs);
+    }
     for (max--; max > 0; max--) {
         LiveTilemap next(w.getTileset());
         std::vector<std::vector<int>> sheet = w.getSlice(x + max * fdp[0], z + max * fdp[1], d, &offs);
@@ -275,14 +275,14 @@ void drawWorld(sf::RenderTarget & rt, World w, std::vector<RenderableEntity*> en
             }
         }
     }
-    std::cout << "SEARCHING FOR MAX BACKWARD" << std::endl;
+    
     Direction backDirection = (Direction)((d + 5) % 6);//The direction away from the camera is the first counterclockwise direction in the enum.
     const int* dp = DIRECTION_VALUES[backDirection];
     float baseOffs;
     for (int i = 0; offs >= 0; i++) { //Going back.
         LiveTilemap next(w.getTileset());
         std::vector<std::vector<int>> sheet = w.getSlice(x + i * dp[0], z + i * dp[1], d, &offs);
-        if (i == 0) baseOffs = (float) offs;
+        if (i == 0) baseOffs = (float)offs;
         if (offs >= 0) {
             next.update(sheet, getColor(i));
             drawObjects.push_back(&next);
@@ -292,8 +292,8 @@ void drawWorld(sf::RenderTarget & rt, World w, std::vector<RenderableEntity*> en
 
             for (unsigned int e = 0; e < entities.size(); e++) {
                 float eoffs,
-                     depth = entities[e]->getDepth(x, z, d, &eoffs);
-                if ((int) depth == i) {
+                    depth = entities[e]->getDepth(x, z, d, &eoffs);
+                if ((int)depth == i) {
                     drawObjects.push_back(entities[e]);
                     offsets.push_back(eoffs);
                     depths.push_back(depth);
@@ -302,9 +302,13 @@ void drawWorld(sf::RenderTarget & rt, World w, std::vector<RenderableEntity*> en
             }
         }
     }
+    std::cout << offsets.size() << std::endl;
     for (int i = offsets.size() - 1; i >= 0; i--) { //Draw the planes back-to-front.
         sf::Transform translation;
+        std::cout << "Drawing with (0,0) at " << (translation * transform).transformPoint(0, 0).x << std::endl;
         translation.translate(w.getTileset().tileWidth*(std::abs(depths[i]) / 2.0f + baseOffs - offsets[i]), heights[i]);
-        rt.draw(*drawObjects[i], translation * transform);
+        std::cout << "Drawing with (0,0) at " << (translation * transform).transformPoint(0, 0).x << std::endl;
+        rt.draw(*(drawObjects[i]), translation * transform);
+        std::cout << "Drawing with (0,0) at " << (translation * transform).transformPoint(0, 0).x << std::endl;
     }
 }
