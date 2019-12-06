@@ -8,7 +8,7 @@
 
 int World::WorldGenVal(int x, int y)
 {
-	return std::rand() % (1.5 * (x < y ? y - x : x - y)) + x < y ? x : y;
+	return std::rand() % (int)(1.5 * (x < y ? y - x : x - y)) + x < y ? x : y;
 }
 void World::WorldGenHelper(std::vector<std::vector<int>> &world, int xStart, int xEnd, int zStart, int zEnd)
 {
@@ -69,9 +69,11 @@ World::World(std::string fileName)
 	std::ifstream inputWorld;
 	sf::Texture worldTxtures;
 	inputWorld.open(fileName);
-	if (!worldTxtures.loadFromFile(inputWorld.getline))
+    std::string texfile;
+    std::getline(inputWorld, texfile);
+	if (inputWorld.bad() || !worldTxtures.loadFromFile(texfile))
 	{
-		std::cerr << "FAILED READING PLAYER TEXTURE\n";
+		std::cerr << "FAILED LOADING WORLD TEXTURE: " << texfile << "\n";
 	}
 	inputWorld >> tileHeight >> ascii >> tileWidth >> ascii >> tilesPerRow >> ascii;
 	this->tiles = { &worldTxtures, tileHeight, tileWidth, tilesPerRow };
@@ -228,26 +230,75 @@ void World::WorldGen(std::string fileName, std::string pngFile, int depth, int w
 	}
 }
 
-void drawWorld(sf::RenderTarget & rt, World w, int x, int z, Direction d, sf::Transform transform)
-{
-    std::vector<LiveTilemap> opaquePlanes;
-    std::vector<int> offsets;
+sf::Color getColor(int depth) {
+    if (depth == 1) return sf::Color((sf::Uint8)(255/std::sqrt(depth)), (sf::Uint8)(255/std::sqrt(depth)), 255);
+    if (depth > 0) return sf::Color(255/depth, 255/ depth, 255);
+    return sf::Color(255, 255, 255, (sf::Uint8)(255.0/(depth+1)));
+}
 
-    int offs = 0;
+void drawWorld(sf::RenderTarget & rt, World w, std::vector<RenderableEntity*> entities, int x, int z, Direction d) {drawWorld(rt, w,entities, x, z, d, sf::Transform());}
+
+void drawWorld(sf::RenderTarget & rt, World w, std::vector<RenderableEntity*> entities, int x, int z, Direction d, sf::Transform transform)
+{
+    std::vector<sf::Drawable*> drawObjects;
+    std::vector<float> offsets, heights,depths;
+
+    int offs = 0, depth;
+    Direction frontDirection = (Direction)((d+1) %6);
+    const int* fdp = DIRECTION_VALUES[frontDirection];
+    int max = 1;
+    for(;offs >= 0; max++)w.getSlice(x + max * fdp[0], z + max * fdp[1], d, &depth);
+    for (max--; max > 0; max--) {
+        LiveTilemap next(w.getTileset());
+        std::vector<std::vector<int>> sheet = w.getSlice(x + max * fdp[0], z + max * fdp[1], d, &offs);
+        if (offs >= 0) {
+            next.update(sheet, getColor(max));
+            drawObjects.push_back(&next);
+            offsets.push_back(offs);
+            depths.push_back(max);
+            heights.push_back(0);
+
+            for (unsigned int e = 0; e < entities.size(); e++) {
+                float eoffs;
+                float depth = entities[e]->getDepth(x, z, d, &eoffs);
+                if ((int) depth == max) {
+                    drawObjects.push_back(entities[e]);
+                    offsets.push_back(eoffs);
+                    depths.push_back(depth);
+                    heights.push_back(entities[e]->getY());
+                }
+            }
+        }
+    }
     Direction backDirection = (Direction)((d + 5) % 6);//The direction away from the camera is the first counterclockwise direction in the enum.
     const int* dp = DIRECTION_VALUES[backDirection];
-    for (int i = 0; offs >= 0; i++) {
+    float baseOffs;
+    for (int i = 0; offs >= 0; i++) { //Going back.
         LiveTilemap next(w.getTileset());
         std::vector<std::vector<int>> sheet = w.getSlice(x + i * dp[0], z + i * dp[1], d, &offs);
+        if (i == 0) baseOffs = (float) offs;
         if (offs >= 0) {
-            next.update(sheet);
-            opaquePlanes.push_back(next);
+            next.update(sheet, getColor(i));
+            drawObjects.push_back(&next);
             offsets.push_back(offs);
+            depths.push_back(i);
+            heights.push_back(0);
+
+            for (unsigned int e = 0; e < entities.size(); e++) {
+                float eoffs,
+                     depth = entities[e]->getDepth(x, z, d, &eoffs);
+                if ((int) depth == i) {
+                    drawObjects.push_back(entities[e]);
+                    offsets.push_back(eoffs);
+                    depths.push_back(depth);
+                    heights.push_back(entities[e]->getY());
+                }
+            }
         }
     }
     for (int i = offsets.size() - 1; i >= 0; i--) { //Draw the planes back-to-front.
         sf::Transform translation;
-        translation.translate(t.tileWidth*(i / 2.0f + offsets[i] + p.getOffset()), t.tileHeight*p.getY());
-        rt.draw(opaquePlanes[i], translation * transform);
+        translation.translate(w.getTileset().tileWidth*(std::abs(depths[i]) / 2.0f + baseOffs - offsets[i]), heights[i]);
+        rt.draw(*drawObjects[i], translation * transform);
     }
 }

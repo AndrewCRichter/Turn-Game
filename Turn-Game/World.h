@@ -29,8 +29,10 @@ public:
     Tileset getTileset();
 };
 
-void drawWorld(sf::RenderTarget &rt, World w, std::vector<RenderableEntity> entities, int x, int z, Direction d);
-void drawWorld(sf::RenderTarget &rt, World w, std::vector<RenderableEntity> entities, int x, int z, Direction d, sf::Transform transform);
+sf::Color getColor(int depth);
+
+void drawWorld(sf::RenderTarget &rt, World w, std::vector<RenderableEntity*> entities, int x, int z, Direction d);
+void drawWorld(sf::RenderTarget &rt, World w, std::vector<RenderableEntity*> entities, int x, int z, Direction d, sf::Transform transform);
 
 
 #endif // THING

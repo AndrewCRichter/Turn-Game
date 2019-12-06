@@ -93,7 +93,9 @@ int main() {
         window.clear(sf::Color(0, 200, 200));
         int xz[2];
         p.getXZ(xz);
-        drawWorld(window, w, xz[0],xz[1],p.getDirection());
+        std::vector<RenderableEntity*> entities;
+        entities.push_back((RenderableEntity*) &p);
+        drawWorld(window, w, entities, xz[0],xz[1],p.getDirection());
         //window.draw(l, trans);
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         

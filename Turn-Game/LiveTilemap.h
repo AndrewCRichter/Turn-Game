@@ -14,5 +14,5 @@ private:
 public:
 	
 	LiveTilemap(Tileset t);
-	bool update(const std::vector<std::vector<int>> &tiles);
+	bool update(const std::vector<std::vector<int>> &tiles, sf::Color tint);
 };

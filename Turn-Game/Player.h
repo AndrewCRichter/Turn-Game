@@ -13,13 +13,13 @@ private:
 	const float gravity = 1;
 	const float width = .875f,
 			   height = 1.875f;
-	float x;
-	float y;
-	float dx, dy;
-	int x0;
-	int z0;
-	Direction currentDir;
-	std::vector<std::vector<int>> currentSlice;
+    float x;
+    float y;
+    float dx, dy;
+    int x0;
+    int z0;
+    Direction currentDir;
+    std::vector<std::vector<int>> currentSlice;
 	sf::Texture* spritesheet;
 	bool canJump; //True if the player is touching ground.
 	int getCorner(int xoff, int yoff);
