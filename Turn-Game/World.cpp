@@ -169,10 +169,10 @@ void World::WorldGen(std::string fileName, std::string pngFile, int depth, int w
 		flatWorld[i].resize(width);
 	}
 	flatWorld[0][0] = height / 2;
-	flatWorld[0][width] = height / 3;
-	flatWorld[depth][0] = height / 4;
-	flatWorld[depth][width] = height / 5;
-	WorldGenHelper(flatWorld, 0, width, 0, depth);
+	flatWorld[0][width-1] = height / 3;
+	flatWorld[depth-1][0] = height / 4;
+	flatWorld[depth-1][width-1] = height / 5;
+	WorldGenHelper(flatWorld, 0, width-1, 0, depth-1);
 
 	world.resize(depth);
 	file.open(fileName);
