@@ -18,8 +18,8 @@ private:
 	int depth;
 	std::vector<std::vector<std::vector<int>>> world;
     Tileset tiles;
-	int WorldGenVal(int x, int y);
-	void WorldGenHelper(std::vector<std::vector<int>> &world, int xStart, int xEnd, int zStart, int zEnd);
+    static int WorldGenVal(int x, int y);
+    static void WorldGenHelper(std::vector<std::vector<int>> &world, int xStart, int xEnd, int zStart, int zEnd);
     
 public:
 	World(std::string fileName); //TODO: Move texture directory into file.

@@ -240,6 +240,8 @@ void drawWorld(sf::RenderTarget & rt, World w, std::vector<RenderableEntity*> en
 
 void drawWorld(sf::RenderTarget & rt, World w, std::vector<RenderableEntity*> entities, int x, int z, Direction d, sf::Transform transform)
 {
+    std::cout << "ENTERED drawWorld" << std::endl;
+
     std::vector<sf::Drawable*> drawObjects;
     std::vector<float> offsets, heights,depths;
 
@@ -247,7 +249,10 @@ void drawWorld(sf::RenderTarget & rt, World w, std::vector<RenderableEntity*> en
     Direction frontDirection = (Direction)((d+1) %6);
     const int* fdp = DIRECTION_VALUES[frontDirection];
     int max = 1;
+
+    std::cout << "SEARCHING FOR MAX FORWARD" << std::endl;
     for(;offs >= 0; max++)w.getSlice(x + max * fdp[0], z + max * fdp[1], d, &depth);
+    std::cout << "FOUND MAX FORWARD: " << max << " Counting down." << std::endl;
     for (max--; max > 0; max--) {
         LiveTilemap next(w.getTileset());
         std::vector<std::vector<int>> sheet = w.getSlice(x + max * fdp[0], z + max * fdp[1], d, &offs);
@@ -270,6 +275,7 @@ void drawWorld(sf::RenderTarget & rt, World w, std::vector<RenderableEntity*> en
             }
         }
     }
+    std::cout << "SEARCHING FOR MAX BACKWARD" << std::endl;
     Direction backDirection = (Direction)((d + 5) % 6);//The direction away from the camera is the first counterclockwise direction in the enum.
     const int* dp = DIRECTION_VALUES[backDirection];
     float baseOffs;
