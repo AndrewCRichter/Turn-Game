@@ -11,7 +11,7 @@
 int main() {
 	
     std::cout << "1" << std::endl;
-    //World::WorldGen("Test World", "Test Texture", 10, 10, 10, 4, 64, 64, 3);
+    World::WorldGen("Test World", "Test Texture", 10, 10, 10, 4, 64, 64, 3);
 
     std::cout << "2" << std::endl;
 
